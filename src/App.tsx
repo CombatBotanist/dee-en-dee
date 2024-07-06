@@ -24,7 +24,7 @@ function App() {
   }
 
   return (
-    <Authenticator loginMechanisms={['username', 'email']}>
+    <Authenticator loginMechanisms={['email']}>
       {({ signOut, user }) => (
         <main>
           <h1>{user?.signInDetails?.loginId}'s todos</h1>
