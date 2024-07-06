@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Schema } from '../amplify/data/resource';
 import { generateClient } from 'aws-amplify/data';
-import { Authenticator } from '@aws-amplify/ui-react';
-import '@aws-amplify/ui-react/styles.css';
+import { Authenticator, Button, Card, Collection, Divider, Flex, Heading, Link, View } from '@aws-amplify/ui-react';
 
 const client = generateClient<Schema>();
 
@@ -24,27 +23,31 @@ function App() {
   }
 
   return (
-    <Authenticator loginMechanisms={['email']}>
+    <Authenticator signUpAttributes={['preferred_username']}>
       {({ signOut, user }) => (
-        <main>
-          <h1>{user?.username}'s todos</h1>
-          <button onClick={createTodo}>+ new</button>
-          <ul>
-            {todos.map((todo) => (
-              <li key={todo.id} onClick={() => deleteTodo(todo.id)}>
+        <Flex direction='column'>
+          <Heading level={3}>Todos</Heading>
+          <Button variation='primary' onClick={createTodo}>
+            + new
+          </Button>
+          <Collection type='list' items={todos}>
+            {(todo) => (
+              <Card key={todo.id} onClick={() => deleteTodo(todo.id)}>
                 {todo.content}
-              </li>
-            ))}
-          </ul>
-          <div>
+              </Card>
+            )}
+          </Collection>
+          <View>
             🥳 App successfully hosted. Try creating a new todo.
-            <br />
-            <a href='https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates'>
+            <Divider />
+            <Link href='https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates'>
               Review next step of this tutorial.
-            </a>
-          </div>
-          <button onClick={signOut}>Sign out</button>
-        </main>
+            </Link>
+          </View>
+          <Button variation='primary' onClick={signOut}>
+            Sign out
+          </Button>
+        </Flex>
       )}
     </Authenticator>
   );
