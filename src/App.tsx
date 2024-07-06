@@ -2,17 +2,35 @@ import { useEffect, useState } from 'react';
 import type { Schema } from '../amplify/data/resource';
 import { generateClient } from 'aws-amplify/data';
 import { Authenticator, Button, Card, Collection, Divider, Flex, Heading, Link, View } from '@aws-amplify/ui-react';
+import { Hub } from 'aws-amplify/utils';
 
 const client = generateClient<Schema>();
 
-function App() {
+export default function App() {
   const [todos, setTodos] = useState<Array<Schema['Todo']['type']>>([]);
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
       next: (data) => setTodos([...data.items]),
     });
+    console.debug('Subscribed to todos in useEffect');
   }, []);
+
+  Hub.listen('auth', ({ payload: { event } }) => {
+    switch (event) {
+      case 'signedOut':
+        window.location.reload();
+        break;
+      case 'signedIn':
+        client.models.Todo.observeQuery().subscribe({
+          next: (data) => setTodos([...data.items]),
+        });
+        console.debug('Subscribed to todos in Hub.listen');
+        break;
+      default:
+        break;
+    }
+  });
 
   function createTodo() {
     client.models.Todo.create({ content: window.prompt('Todo content') });
@@ -52,5 +70,3 @@ function App() {
     </Authenticator>
   );
 }
-
-export default App;
