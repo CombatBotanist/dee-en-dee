@@ -24,7 +24,7 @@ function App() {
 
   return (
     <Authenticator signUpAttributes={['preferred_username']}>
-      {({ signOut, user }) => (
+      {({ signOut }) => (
         <Flex direction='column'>
           <Heading level={3}>Todos</Heading>
           <Button variation='primary' onClick={createTodo}>
