@@ -12,6 +12,46 @@ const schema = a.schema({
       content: a.string(),
     })
     .authorization((allow) => [allow.owner()]),
+  Person: a
+    .model({
+      name: a.string().required(),
+      description: a.string(),
+      owner: a
+        .string()
+        .authorization((allow) => [allow.owner().to(['read', 'delete'])]),
+    })
+    .secondaryIndexes((index) => [index('name')])
+    .authorization((allow) => [allow.owner()]),
+  Place: a
+    .model({
+      name: a.string(),
+      description: a.string(),
+      owner: a
+        .string()
+        .authorization((allow) => [allow.owner().to(['read', 'delete'])]),
+    })
+    .secondaryIndexes((index) => [index('name')])
+    .authorization((allow) => [allow.owner()]),
+  Thing: a
+    .model({
+      name: a.string(),
+      description: a.string(),
+      owner: a
+        .string()
+        .authorization((allow) => [allow.owner().to(['read', 'delete'])]),
+    })
+    .secondaryIndexes((index) => [index('name')])
+    .authorization((allow) => [allow.owner()]),
+  Idea: a
+    .model({
+      name: a.string(),
+      description: a.string(),
+      owner: a
+        .string()
+        .authorization((allow) => [allow.owner().to(['read', 'delete'])]),
+    })
+    .secondaryIndexes((index) => [index('name')])
+    .authorization((allow) => [allow.owner()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
@@ -20,10 +60,6 @@ export const data = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: 'userPool',
-    // API Key is used for a.allow.public() rules
-    // apiKeyAuthorizationMode: {
-    //   expiresInDays: 30,
-    // },
   },
 });
 
