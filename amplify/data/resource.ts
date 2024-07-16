@@ -16,9 +16,6 @@ const schema = a.schema({
     .model({
       name: a.string().required(),
       description: a.string(),
-      owner: a
-        .string()
-        .authorization((allow) => [allow.owner().to(['read', 'delete'])]),
     })
     .secondaryIndexes((index) => [index('name')])
     .authorization((allow) => [allow.owner()]),
@@ -26,9 +23,6 @@ const schema = a.schema({
     .model({
       name: a.string(),
       description: a.string(),
-      owner: a
-        .string()
-        .authorization((allow) => [allow.owner().to(['read', 'delete'])]),
     })
     .secondaryIndexes((index) => [index('name')])
     .authorization((allow) => [allow.owner()]),
@@ -36,9 +30,6 @@ const schema = a.schema({
     .model({
       name: a.string(),
       description: a.string(),
-      owner: a
-        .string()
-        .authorization((allow) => [allow.owner().to(['read', 'delete'])]),
     })
     .secondaryIndexes((index) => [index('name')])
     .authorization((allow) => [allow.owner()]),
@@ -46,9 +37,6 @@ const schema = a.schema({
     .model({
       name: a.string(),
       description: a.string(),
-      owner: a
-        .string()
-        .authorization((allow) => [allow.owner().to(['read', 'delete'])]),
     })
     .secondaryIndexes((index) => [index('name')])
     .authorization((allow) => [allow.owner()]),
