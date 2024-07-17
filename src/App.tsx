@@ -10,6 +10,7 @@ import {
   Flex,
   Grid,
   Heading,
+  Input,
   Link,
   Menu,
   MenuItem,
@@ -17,11 +18,32 @@ import {
   View,
 } from '@aws-amplify/ui-react';
 import { Hub } from 'aws-amplify/utils';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import {
+  InlineEditor,
+  AccessibilityHelp,
+  Autoformat,
+  Autosave,
+  Bold,
+  Essentials,
+  Italic,
+  List,
+  Mention,
+  Paragraph,
+  Strikethrough,
+  TextTransformation,
+  Underline,
+  Undo,
+} from 'ckeditor5';
+import 'ckeditor5/ckeditor5.css';
+import './App.css';
 
 const client = generateClient<Schema>();
 
 export default function App() {
   const [todos, setTodos] = useState<Array<Schema['Todo']['type']>>([]);
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
 
   useEffect(() => {
     client.models.Todo.observeQuery().subscribe({
@@ -53,6 +75,65 @@ export default function App() {
   function deleteTodo(id: string) {
     client.models.Todo.delete({ id });
   }
+
+  async function getAutocompleteItems(query: string) {
+    const { data } = await client.models.Person.list();
+    console.debug('Autocomplete items:', data);
+    return data
+      .filter(({ name }) => name.toLowerCase().includes(query.toLowerCase()))
+      .slice(0, 10)
+      .map((entry) => {
+        return {
+          id: `@${entry.name}`,
+          text: entry.name,
+        };
+      });
+  }
+
+  const editorConfig = {
+    toolbar: {
+      items: [
+        'undo',
+        'redo',
+        '|',
+        'bold',
+        'italic',
+        'underline',
+        'strikethrough',
+        '|',
+        'bulletedList',
+        'numberedList',
+        '|',
+        'accessibilityHelp',
+      ],
+      shouldNotGroupWhenFull: false,
+    },
+    plugins: [
+      AccessibilityHelp,
+      Autoformat,
+      Autosave,
+      Bold,
+      Essentials,
+      Italic,
+      List,
+      Mention,
+      Paragraph,
+      Strikethrough,
+      TextTransformation,
+      Underline,
+      Undo,
+    ],
+    mention: {
+      feeds: [
+        {
+          marker: '@',
+          feed: getAutocompleteItems,
+          minimumCharacters: 1,
+        },
+      ],
+    },
+    placeholder: 'Type or paste your content here!',
+  };
 
   return (
     <Authenticator signUpAttributes={['preferred_username']}>
@@ -119,6 +200,35 @@ export default function App() {
                 <Link href='https://docs.amplify.aws/react/start/quickstart/#make-frontend-updates'>
                   Review next step of this tutorial.
                 </Link>
+                <Input
+                  placeholder='Enter name here...'
+                  onChange={({ target }) => setName(target.value)}
+                />
+                <CKEditor
+                  editor={InlineEditor}
+                  config={editorConfig}
+                  onChange={(_event, editor) => {
+                    setDescription(editor.getData());
+                  }}
+                />
+                <Button
+                  onClick={async () => {
+                    console.debug({
+                      name,
+                      description,
+                    });
+                    const result = await client.models.Person.create({
+                      name,
+                      description,
+                    });
+                    console.debug('Person created:', result);
+                  }}
+                >
+                  Create
+                </Button>
+                {/* <Button onClick={getAutocompleteItems}>
+                  Get autocomplete items
+                </Button> */}
               </View>
             </Flex>
           </Card>
