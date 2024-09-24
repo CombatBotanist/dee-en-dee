@@ -12,7 +12,7 @@
   "dependencies": {
     "@aws-amplify/ui-react": "^6.1.12",
     "@ckeditor/ckeditor5-react": "^8.0.0",
-    "aws-amplify": "^6.3.8",
+    "aws-amplify": "^6.6.2",
     "ckeditor5": "^42.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
